@@ -67,24 +67,13 @@
       transform: scale(0.985);
     }
 
-    .arrow-circle {
-      background-color: transparent;
-      transform: scale(0.9);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-cta:hover .arrow-circle {
-      background-color: #000000;
-      transform: scale(1);
-    }
-
     .arrow-icon {
       color: #000000;
-      transform: rotate(0deg);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translate(0, 0) scale(1) rotate(0deg);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-cta:hover .arrow-icon {
-      color: #FFFFFF;
-      transform: rotate(-45deg);
+      transform: translate(5px, 0) scale(1.25) rotate(-45deg);
     }
 
     /* ----------------------------------------------------
@@ -204,13 +193,13 @@
 
           <!-- Background SVG with exact dynamic Bento Vector Mask Path (NO STROKE, solid #161618) -->
           <svg id="bento-svg" class="absolute inset-0 w-full h-full pointer-events-none" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path id="bento-path" fill="#161618" stroke="none" />
+            <path id="bento-path" fill="#202126" stroke="none" />
           </svg>
 
           <!-- AI PILL (ПУНКТ 5): Gray bg, light text, animated traveling white beam border -->
           <div 
             id="ai-pill" 
-            class="absolute top-0 left-0 z-10 flex items-center gap-1.5 px-3.5 py-2 rounded-[12px] bg-[#242427] select-none"
+            class="absolute top-0 left-0 z-10 flex items-center gap-1.5 px-3.5 py-2 rounded-[12px] bg-[#282A30] select-none"
           >
             <!-- Base subtle border -->
             <div class="absolute inset-0 rounded-[12px] border border-white/10 pointer-events-none"></div>
@@ -233,7 +222,6 @@
               />
             </svg>
 
-            <span class="text-white text-xs z-10">⚡</span>
             <span class="text-[10px] font-bold uppercase tracking-wider text-white/90 z-10">
               СГЕНЕРИРОВАНО НЕЙРОСЕТЬЮ
             </span>
@@ -259,17 +247,15 @@
               Загрузите фото стен — покажем варианты готовой отделки.
             </p>
 
-            <!-- 3. BUTTON «ПОПРОБОВАТЬ» (ПУНКТ 4): White bg, black text, animated circle + rotating arrow on hover -->
+            <!-- 3. BUTTON «ПОПРОБОВАТЬ»: White bg, black text, smooth 0.3s arrow scale + shift + rotate on hover -->
             <a 
               href="paywall.html" 
-              class="btn-cta group mt-4 w-full h-[48px] rounded-xl flex items-center justify-center gap-2.5 px-5 font-bold text-[14px] cursor-pointer"
+              class="btn-cta group mt-4 w-full h-[48px] rounded-xl flex items-center justify-center gap-2 px-5 font-bold text-[14px] cursor-pointer"
             >
               <span>Попробовать</span>
-              <span class="arrow-circle w-7 h-7 rounded-full flex items-center justify-center">
-                <svg class="arrow-icon w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                </svg>
-              </span>
+              <svg class="arrow-icon w-4 h-4 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+              </svg>
             </a>
 
           </div>
