@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Home Styler — Banner Widget</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #07080A;
+      color: #FFFFFF;
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .font-heading {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+
+    /* Glass tag on photos */
+    .glass-tag {
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* Slider handle */
+    .slider-handle-shadow {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 0 2px #FFFFFF;
+    }
+
+    /* CTA BUTTON: Orange background, white text & arrow */
+    .btn-cta {
+      background-color: #FF5A00;
+      color: #FFFFFF;
+      box-shadow: 0 4px 16px rgba(255, 90, 0, 0.28);
+      transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .btn-cta:hover {
+      background-color: #FF6E1A;
+      box-shadow: 0 6px 20px rgba(255, 90, 0, 0.38);
+    }
+    .btn-cta:active {
+      transform: scale(0.985);
+    }
+
+    .arrow-icon {
+      color: #FFFFFF;
+      transform: translate(0, 0) scale(1) rotate(0deg);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-cta:hover .arrow-icon {
+      transform: translate(5px, 0) scale(1.25) rotate(-45deg);
+    }
+
+    /* ANIMATED BORDER BEAM FOR AI PILL */
+    @keyframes border-beam-travel {
+      0% {
+        stroke-dashoffset: 0;
+      }
+      100% {
+        stroke-dashoffset: -100;
+      }
+    }
+    .beam-stroke {
+      animation: border-beam-travel 2.8s linear infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- WIDGET CONTAINER (READY TO EMBED) -->
+  <!-- ======================================================== -->
+  <div class="w-full max-w-[360px] flex flex-col gap-3 select-none">
+
+    <!-- 1. PHOTO BLOCK: INTERACTIVE BEFORE / AFTER SLIDER CARD -->
+    <div 
+      id="banner-slider-box" 
+      class="relative w-full h-[215px] rounded-[16px] overflow-hidden select-none cursor-ew-resize bg-black touch-none"
+    >
+      <!-- AFTER Image (Base layer - Loft Interior) -->
+      <img 
+        src="after.jpg" 
+        alt="После" 
+        class="absolute inset-0 w-full h-full object-cover block pointer-events-none"
+      />
+
+      <!-- BEFORE Image (Clipped layer - Japandi Interior) -->
+      <img 
+        id="before-image" 
+        src="before.jpg" 
+        alt="До" 
+        class="absolute inset-0 w-full h-full object-cover block pointer-events-none"
+        style="clip-path: polygon(0 0, 48% 0, 48% 100%, 0 100%);"
+      />
+
+      <!-- Divider Line -->
+      <div 
+        id="banner-slider-line" 
+        class="absolute inset-y-0 w-[2px] bg-white pointer-events-none z-10"
+        style="left: 48%; box-shadow: 0 0 8px rgba(255,255,255,0.6);"
+      ></div>
+
+      <!-- Slider Thumb Handle -->
+      <div 
+        id="banner-slider-thumb" 
+        class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-white slider-handle-shadow flex items-center justify-center text-black z-20 pointer-events-none transition-transform active:scale-110"
+        style="left: 48%;"
+      >
+        <svg class="w-3.5 h-3.5 text-black" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8 7-5 5 5 5M16 7l5 5-5 5"/>
+        </svg>
+      </div>
+
+      <!-- Badges ДО / ПОСЛЕ -->
+      <span class="absolute bottom-2.5 left-2.5 z-20 glass-tag px-2.5 py-0.5 rounded-md text-[10px] font-semibold text-white/90 pointer-events-none">
+        ДО
+      </span>
+      <span class="absolute bottom-2.5 right-2.5 z-20 glass-tag px-2.5 py-0.5 rounded-md text-[10px] font-semibold text-white/90 pointer-events-none">
+        ПОСЛЕ
+      </span>
+    </div>
+
+    <!-- 2. BENTO CONTAINER WITH VECTOR MASK -->
+    <div id="bento-container" class="relative w-full">
+      
+      <!-- Background SVG with exact dynamic Bento Vector Mask Path -->
+      <svg id="bento-svg" class="absolute inset-0 w-full h-full pointer-events-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path id="bento-path" fill="#202126" stroke="none" />
+      </svg>
+
+      <!-- AI PILL: Gray bg, light text, animated traveling white beam border -->
+      <div 
+        id="ai-pill" 
+        class="absolute top-0 left-0 z-10 flex items-center gap-1.5 px-3.5 py-2 rounded-[12px] bg-[#282A30] select-none"
+      >
+        <!-- Base subtle border -->
+        <div class="absolute inset-0 rounded-[12px] border border-white/10 pointer-events-none"></div>
+
+        <!-- Dynamic Traveling White Beam SVG -->
+        <svg id="beam-svg" class="absolute inset-0 w-full h-full pointer-events-none overflow-visible" xmlns="http://www.w3.org/2000/svg">
+          <rect 
+            id="beam-rect"
+            x="0.75" y="0.75" 
+            width="100%" height="100%" 
+            rx="11" 
+            fill="none" 
+            stroke="#FFFFFF" 
+            stroke-width="1.5" 
+            stroke-linecap="round"
+            pathLength="100"
+            stroke-dasharray="22 78"
+            class="beam-stroke"
+            style="filter: drop-shadow(0 0 2px rgba(255,255,255,0.7));"
+          />
+        </svg>
+
+        <span class="text-[10px] font-bold uppercase tracking-wider text-white/90 z-10">
+          AI Редизайн
+        </span>
+      </div>
+
+      <!-- Top-Right Info (10 сек) -->
+      <div class="absolute top-2.5 right-4 z-10 flex items-center gap-1 text-[11px] font-medium text-white/45">
+        <svg class="w-3.5 h-3.5 text-white/45" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>10 сек</span>
+      </div>
+
+      <!-- Content Inside Bento Container -->
+      <div class="relative z-10 pt-[46px] px-5 pb-5 flex flex-col">
+        
+        <h2 class="font-heading text-[17px] font-bold text-white leading-snug mt-1">
+          Примерьте дизайн вашей квартиры
+        </h2>
+
+        <p class="text-[12px] text-white/55 mt-1 leading-normal font-normal">
+          Загрузите фото! — покажем варианты готовой отделки.
+        </p>
+
+        <!-- 3. BUTTON «ПОПРОБОВАТЬ»: Orange bg, white text, smooth 0.3s arrow hover animation -->
+        <a 
+          href="paywall.html" 
+          class="btn-cta group mt-4 w-full h-[48px] rounded-xl flex items-center justify-center gap-2 px-5 font-bold text-[14px] cursor-pointer"
+        >
+          <span>Попробовать</span>
+          <svg class="arrow-icon w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+          </svg>
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // 1. Dynamic Bento Notch Mask Path Generator
+    function updateBentoShape() {
+      const container = document.getElementById('bento-container');
+      const pill = document.getElementById('ai-pill');
+      const svg = document.getElementById('bento-svg');
+      const path = document.getElementById('bento-path');
+
+      if (!container || !pill || !svg || !path) return;
+
+      const w = container.offsetWidth;
+      const h = container.offsetHeight;
+      if (w === 0 || h === 0) return;
+
+      const pillW = pill.offsetWidth;
+      const pillH = pill.offsetHeight;
+
+      const GAP = 3;
+      const nw = pillW + GAP;
+      const nh = pillH + GAP;
+      
+      const r = 16;
+      const r_inner = 10;
+
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      const d = [
+        `M ${nw + r} 0`,
+        `L ${w - r} 0`,
+        `A ${r} ${r} 0 0 1 ${w} ${r}`,
+        `L ${w} ${h - r}`,
+        `A ${r} ${r} 0 0 1 ${w - r} ${h}`,
+        `L ${r} ${h}`,
+        `A ${r} ${r} 0 0 1 0 ${h - r}`,
+        `L 0 ${nh + r}`,
+        `A ${r} ${r} 0 0 1 ${r} ${nh}`,
+        `L ${nw - r_inner} ${nh}`,
+        `A ${r_inner} ${r_inner} 0 0 0 ${nw} ${nh - r_inner}`,
+        `L ${nw} ${r}`,
+        `A ${r} ${r} 0 0 1 ${nw + r} 0`,
+        `Z`
+      ].join(' ');
+
+      path.setAttribute('d', d);
+
+      const beamRect = document.getElementById('beam-rect');
+      if (beamRect) {
+        beamRect.setAttribute('width', (pillW - 1.5) + 'px');
+        beamRect.setAttribute('height', (pillH - 1.5) + 'px');
+      }
+    }
+
+    window.addEventListener('load', updateBentoShape);
+    window.addEventListener('resize', updateBentoShape);
+    setTimeout(updateBentoShape, 50);
+
+    // 2. Interactive Before/After Split Slider Engine
+    (function initSlider() {
+      const box = document.getElementById('banner-slider-box');
+      const beforeImg = document.getElementById('before-image');
+      const line = document.getElementById('banner-slider-line');
+      const thumb = document.getElementById('banner-slider-thumb');
+      
+      let isDragging = false;
+
+      function updateSliderPosition(clientX) {
+        const rect = box.getBoundingClientRect();
+        let posX = clientX - rect.left;
+        posX = Math.max(0, Math.min(posX, rect.width));
+        const pct = (posX / rect.width) * 100;
+
+        beforeImg.style.clipPath = `polygon(0 0, ${pct}% 0, ${pct}% 100%, 0 100%)`;
+        line.style.left = `${pct}%`;
+        thumb.style.left = `${pct}%`;
+      }
+
+      function onPointerDown(e) {
+        isDragging = true;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        updateSliderPosition(clientX);
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        updateSliderPosition(clientX);
+      }
+
+      function onPointerUp() {
+        isDragging = false;
+      }
+
+      box.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+
+      box.addEventListener('touchstart', onPointerDown, { passive: true });
+      window.addEventListener('touchmove', onPointerMove, { passive: true });
+      window.addEventListener('touchend', onPointerUp);
+    })();
+  </script>
+</body>
+</html>
